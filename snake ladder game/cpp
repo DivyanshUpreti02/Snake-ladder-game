@@ -1,0 +1,98 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <vector>
+
+using namespace std;
+
+class SnakeLadderGame {
+public:
+    SnakeLadderGame() {
+        board.resize(101, 0);
+        initializeBoard();
+        player1Position = 0;
+        player2Position = 0;
+        currentPlayer = 1;
+    }
+
+    void play() {
+        while (player1Position < 100 && player2Position < 100) {
+            cout << "Player " << currentPlayer << "'s turn. Press Enter to roll the dice.";
+            cin.ignore();
+
+            int diceValue = rollDice();
+            cout << "You rolled a " << diceValue << "!" << endl;
+
+            if (currentPlayer == 1) {
+                movePlayer(player1Position, diceValue);
+                cout << "Player 1 is now at position " << player1Position << endl;
+                if (player1Position >= 100) {
+                    cout << "Player 1 wins!" << endl;
+                    break;
+                }
+                currentPlayer = 2;
+            } else {
+                movePlayer(player2Position, diceValue);
+                cout << "Player 2 is now at position " << player2Position << endl;
+                if (player2Position >= 100) {
+                    cout << "Player 2 wins!" << endl;
+                    break;
+                }
+                currentPlayer = 1;
+            }
+        }
+    }
+
+private:
+    vector<int> board;
+    int player1Position;
+    int player2Position;
+    int currentPlayer;
+
+    void initializeBoard() {
+        // Snakes
+        board[16] = 6;
+        board[47] = 26;
+        board[49] = 11;
+        board[56] = 53;
+        board[62] = 19;
+        board[64] = 60;
+        board[87] = 24;
+        board[93] = 73;
+        board[95] = 75;
+        board[98] = 78;
+
+        // Ladders
+        board[1] = 38;
+        board[4] = 14;
+        board[9] = 31;
+        board[21] = 42;
+        board[28] = 84;
+        board[36] = 44;
+        board[51] = 67;
+        board[71] = 91;
+        board[80] = 100;
+    }
+
+    int rollDice() {
+        return rand() % 6 + 1;
+    }
+
+    void movePlayer(int &position, int diceValue) {
+        position += diceValue;
+        if (position > 100) {
+            position = 100; // Can't move beyond 100
+        }
+        // Check for snakes or ladders
+        if (board[position] != 0) {
+            position = board[position];
+        }
+    }
+};
+
+int main() {
+    srand(static_cast<unsigned>(time(0))); // Seed for random number generation
+    SnakeLadderGame game;
+    game.play();
+    return 0;
+}
